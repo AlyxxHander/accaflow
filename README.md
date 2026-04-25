@@ -10,24 +10,13 @@ Berikut adalah kredensial akun demo yang dapat digunakan untuk mencoba berbagai 
 
 | Role | Email | Password | Keterangan |
 | :--- | :--- | :--- | :--- |
-| **Super Admin** | `superadmin@accaflow.com` | `password` | Akses penuh ke sistem, termasuk manajemen akun dosen dan penghapusan paksa dokumen. |
+| **Super Admin** | `superadmin@accaflow.com` | `password` | Akun Developer (Hanya aktif selama masa pengembangan) yang memiliki akses penuh ke sistem, termasuk manajemen akun dosen, dan penghapusan paksa dokumen. |
 | **Admin** | `admin@accaflow.com` | `password` | Mengelola dokumen masuk, melakukan verifikasi awal (Tahap 1), dan mengelola data dosen. |
 | **Kaprodi** | `kaprodi@accaflow.com` | `password` | Memberikan persetujuan dan mengunggah dokumen ber-stempel digital prodi (Tahap 2). |
 | **Dosen** | `dosen@accaflow.com` | `password` | Menerima pengajuan spesifik, memberikan penandatanganan akhir (Tahap 3). |
 | **Mahasiswa** | `student@accaflow.com` | `password` | Mengajukan dokumen baru dan melacak status dokumen secara mandiri. |
 
 > **Catatan:** Semua akun demo menggunakan password standar `password`.
-
----
-
-## ⚙️ Algoritma & Alur Kerja (Workflow)
-AccaFlow menggunakan algoritma alur kerja sekuensial (*Sequential Workflow Algorithm*) dengan aturan validasi berbasis peran (Role-Based Access Control).
-
-1. **Inisiasi (Tahap 1 - Diajukan):** Mahasiswa mengunggah dokumen (PDF/Gambar) dan memilih Dosen Tujuan. Sistem secara otomatis mencatat *timestamp* dan membuat *log* awal.
-2. **Verifikasi (Tahap 2 - Verifikasi Admin):** Admin mengecek kelengkapan dan keabsahan dokumen. Jika tidak sesuai, dokumen dapat ditolak (Rejected) atau dikembalikan (Reverted). Jika sesuai, status naik ke *Verified*.
-3. **Persetujuan (Tahap 3 - Stempel Digital Prodi):** Kaprodi (atau Admin yang memiliki wewenang) mengunggah kembali dokumen yang telah dibubuhi stempel resmi prodi. Status berubah menjadi *Approved*.
-4. **Finalisasi (Tahap 4 - Penandatanganan):** Dosen Tujuan menerima notifikasi (terisolasi hanya melihat dokumen yang ditujukan kepadanya). Dosen mengunggah dokumen yang telah ditandatangani. Sistem akan melakukan *generate Hash Verifikasi (32-character string)* yang unik. Status berubah menjadi *Signed*.
-5. **Verifikasi Publik:** Dokumen akhir dapat diverifikasi keasliannya oleh pihak luar menggunakan link publik `/verify/{hash}` tanpa memerlukan autentikasi login.
 
 ---
 
