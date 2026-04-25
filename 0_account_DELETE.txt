@@ -1,0 +1,14 @@
+Staff Admin: 
+admin@accaflow.com / password
+
+Mahasiswa Demo: 
+student@accaflow.com / password
+
+Kaprodi: 
+kaprodi@accaflow.com / password
+
+Dosen: 
+dosen@accaflow.com / password
+
+Super Admin (Developer): 
+superadmin@accaflow.com / password
