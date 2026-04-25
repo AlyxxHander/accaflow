@@ -246,6 +246,6 @@
   </div>
 </div>
 
-@vite('resources/js/documents/show_js.js')
+<script type="module" src="{{ asset('build/assets/show_js.js') }}"></script>
 
 @endsection

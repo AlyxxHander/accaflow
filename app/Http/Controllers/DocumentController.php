@@ -143,7 +143,23 @@ class DocumentController extends Controller
             abort(404);
         }
 
-        return Storage::disk('local')->response($path);
+        // << REVERT FOR LOCAL USE >>
+        // return Storage::disk('local')->response($path);
+        // ----------------------------------------------------------------------------------
+        $mimeType = Storage::disk('local')->mimeType($path);
+        
+        return response()->stream(function() use ($path) {
+            $stream = Storage::disk('local')->readStream($path);
+            fpassthru($stream);
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+        }, 200, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . basename($path) . '"',
+            'X-Frame-Options' => 'SAMEORIGIN', // Ensure it can be iframe-d
+        ]);
+        // ----------------------------------------------------------------------------------
     }
 
     public function downloadSigned(Document $document)

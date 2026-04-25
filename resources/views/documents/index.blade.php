@@ -156,6 +156,6 @@
   </form>
 </div>
 
-@vite('resources/js/documents/index_js.js')
+<script type="module" src="{{ asset('build/assets/index_js.js') }}"></script>
 
 @endsection
