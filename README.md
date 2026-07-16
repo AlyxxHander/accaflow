@@ -26,21 +26,24 @@ Berikut adalah kredensial akun demo yang dapat digunakan untuk mencoba berbagai 
 *   **Document Engine:** Mesin utama yang menangani unggah (*upload*), penyimpanan lokal (*secure private storage*), dan pengunduhan (*download*) berbagai versi file (Asli, Ber-stempel, dan Ber-tanda tangan).
 *   **Activity Logger:** Sistem pencatatan riwayat (Audit Trail) yang merekam setiap aksi secara kronologis (dari terbaru ke terlama), mencatat siapa, kapan, dan tindakan apa yang dilakukan pada dokumen.
 *   **Dashboard & Analytics:** Memberikan visualisasi cepat terkait jumlah dokumen yang diajukan, diproses, selesai, serta fitur peringatan otomatis (*Overdue Indicator*) untuk dokumen yang belum diproses lebih dari 2 hari.
-*   **Bulk Actions:** Fitur produktivitas untuk Super Admin dan Admin guna mengelola dan menghapus banyak dokumen tertolak secara bersamaan.
+*   **Web-Based Document Management:** Systems leveraging web-based platforms ensure centralized and near real-time access to academic documents, improving operational transparency and reducing manual errors [1] [2].
+*   **Near Real-Time Document Tracking and Monitoring:** Near Real-time updates and tracking mechanisms, such as those enabled by QR code scanning, allow users to monitor document status efficiently [1] [2]. Dashboards and centralized communication systems provide a comprehensive overview of document workflows [2].
+*   **QR Code for Authentication and Integrity:** QR code-based verification is a robust method for ensuring document authenticity and integrity [4] [5]. QR codes enhance security by enabling tamper-proof verification and efficient document sharing [5] [6].
 
 ---
 
 ## 🧪 Quality Testing Results
 Pengujian fungsional dan keamanan sistem telah dilakukan dengan hasil sebagai berikut:
 
-*   **Role Isolation Test:** **PASS (100%)**
-    *   Mahasiswa tidak dapat mengakses ID dokumen mahasiswa lain.
-    *   Dosen hanya dapat melihat dan memanipulasi dokumen dengan `target_lecturer_id` yang cocok dengan ID mereka sendiri. Uji coba akses melalui URL langsung mengembalikan status `403 Forbidden`.
-*   **File Upload Validation:** **PASS (100%)**
-    *   Sistem berhasil menolak file selain `pdf, jpg, jpeg, png` dan memblokir unggahan file di atas 4MB.
-    *   Penyimpanan file terproteksi di disk *local* private; akses ke file hanya dapat dilakukan melalui rute terkontrol (Controller) untuk mencegah *direct download*.
-*   **Workflow Integrity:** **PASS (100%)**
-    *   Proses *Revert* status berfungsi dengan benar tanpa menghapus riwayat dokumen.
-    *   Sistem pembubuhan stempel dan tanda tangan berhasil menimpa (*override*) prioritas tampilan pratinjau (Preview) ke versi dokumen paling final (*Signed* > *Stamped* > *Original*).
-*   **Overdue Calculation Logic:** **PASS (100%)**
-    *   Sistem berhasil mendeteksi dan memberi label *Overdue* pada dokumen yang stagnan (tidak ada log aktivitas baru) lebih dari 48 jam (2 hari), kecuali untuk dokumen yang sudah mencapai status *Signed* atau *Rejected*.
+*   **Black Box Testing:**
+    *   Pengujian ini dilakukan untuk menjawab rumusan masalah terkait tingginya risiko kesalahan manual (*manual errors*) dan keterlambatan distribusi dokumen dalam sistem konvensional.
+    *   Fokus utama *Black Box Testing* adalah memvalidasi fungsi-fungsi dasar sistem seperti pengunggahan berkas, pencarian arsip, dan alur distribusi surat.
+*   **Security & Role-Based Access Control (RBAC) Testing:**
+    *   Pengujian ini dirumuskan untuk mengatasi masalah kerentanan terhadap akses tidak sah (*unauthorized access*) pada dokumen akademik yang bersifat sensitif.
+    *   Skenario pengujian mencakup verifikasi pembatasan akses dan pencegahan penyalahgunaan data, guna menjaga integritas serta keamanan data dokumen dalam struktur organisasi kampus.
+*   **QR Code & Integrity Testing:**
+    *   Pengujian ini berfokus pada masalah kerentanan manipulasi data digital dan pemalsuan dokumen akademik.
+    *   Skenario pengujian melibatkan pemindaian QR Code untuk memastikan bahwa dokumen tersebut asli dan belum dimanipulasi.
+*   **User Acceptance Testing (UAT):**
+    *   UAT melibatkan pengguna akhir untuk menilai sejauh mana fitur pelacakan *near real-time* melalui dashboard pusat dapat memberikan kemudahan dalam memantau status dokumen secara transparan.
+    *   Pengujian ini mengukur tingkat penerimaan pengguna terhadap efisiensi koordinasi dan kemudahan akses informasi yang disediakan oleh sistem dalam mempercepat birokrasi akademik.

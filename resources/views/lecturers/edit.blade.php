@@ -44,7 +44,7 @@
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-2"><span class="text-red-500">* </span>Jabatan Struktural</label>
           <select name="structural_position" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm">
-            <option value="Dosen Biasa" {{ old('structural_position', $lecturer->structural_position) == 'Dosen Biasa' ? 'selected' : '' }}>Dosen Biasa</option>
+            <option value="Dosen" {{ old('structural_position', $lecturer->structural_position) == 'Dosen' ? 'selected' : '' }}>Dosen</option>
             <option value="Kaprodi" {{ old('structural_position', $lecturer->structural_position) == 'Kaprodi' ? 'selected' : '' }}>Kaprodi</option>
             <option value="Sekprodi" {{ old('structural_position', $lecturer->structural_position) == 'Sekprodi' ? 'selected' : '' }}>Sekprodi</option>
             <option value="Dekan" {{ old('structural_position', $lecturer->structural_position) == 'Dekan' ? 'selected' : '' }}>Dekan</option>

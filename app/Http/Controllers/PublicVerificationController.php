@@ -16,4 +16,10 @@ class PublicVerificationController extends Controller
 
         return view('public.verify', compact('document', 'signer'));
     }
+
+    public function track($id)
+    {
+        $document = Document::with(['user', 'logs.user'])->findOrFail($id);
+        return view('public.track', compact('document'));
+    }
 }

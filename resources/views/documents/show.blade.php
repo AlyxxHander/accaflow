@@ -146,7 +146,7 @@
               @if(($roleName === 'dosen' || $roleName === 'super_admin') && $document->status === 'approved')
                 <div class="mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-2xl">
                   <label class="block text-sm font-bold text-slate-700 mb-2">Unggah Dokumen Ter-Tanda Tangan</label>
-                  <input type="file" name="signed_file" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:cursor-pointer file:font-bold file:bg-indigo-100 file:text-indigo-500 hover:file:bg-indigo-200 transition-all" required>
+                  <input type="file" name="signed_file" accept=".pdf" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:cursor-pointer file:font-bold file:bg-indigo-100 file:text-indigo-500 hover:file:bg-indigo-200 transition-all" required>
                   <p class="mt-2 text-xs text-stone-500">Silakan unggah dokumen hasil tanda tangan basah/digital di sini untuk menyelesaikan pengajuan.</p>
                 </div>
               @endif
@@ -156,10 +156,10 @@
                   <button type="submit" name="status" value="verified" class="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-indigo-200 cursor-pointer">Verifikasi Berkas</button>
                 @endif
 
-                @if(($roleName === 'kaprodi' || $roleName === 'admin' || $roleName === 'super_admin') && $document->status === 'verified')
+                @if(($roleName === 'kaprodi' || $roleName === 'super_admin') && $document->status === 'verified')
                   <div class="w-full mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-2xl">
                     <label class="block text-sm font-bold text-slate-700 mb-2">Unggah Dokumen Ber-Stempel</label>
-                    <input type="file" name="stamped_file" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:cursor-pointer file:font-bold file:bg-indigo-100 file:text-indigo-500 hover:file:bg-indigo-200 transition-all" required>
+                    <input type="file" name="stamped_file" accept=".pdf" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:cursor-pointer file:font-bold file:bg-indigo-100 file:text-indigo-500 hover:file:bg-indigo-200 transition-all" required>
                     <p class="mt-2 text-xs text-stone-500">Silakan unggah dokumen yang sudah dibubuhi stempel prodi di sini.</p>
                   </div>
                 @endif
@@ -168,12 +168,12 @@
                   <button type="submit" name="status" value="signed" class="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-indigo-200 cursor-pointer">Tanda Tangani & Unggah</button>
                 @endif
 
-                @if(($roleName === 'kaprodi' || $roleName === 'admin' || $roleName === 'super_admin') && $document->status === 'verified')
+                @if(($roleName === 'kaprodi' || $roleName === 'super_admin') && $document->status === 'verified')
                   <button type="submit" name="status" value="approved" class="px-6 py-1 h-12 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-indigo-200 cursor-pointer">Beri Stempel Digital</button>
                 @endif
 
                 @if($document->status !== 'rejected' && $document->status !== 'signed')
-                  <button type="submit" name="status" value="rejected" class="px-6 py-3 bg-red-50 text-red-400 hover:bg-red-100 hover:text-red-500 font-bold rounded-2xl transition-all duration-300 border border-red-100 cursor-pointer">Tolak Dokumen</button>
+                  <button type="submit" name="status" value="rejected" formnovalidate class="px-6 py-3 bg-red-50 text-red-400 hover:bg-red-100 hover:text-red-500 font-bold rounded-2xl transition-all duration-300 border border-red-100 cursor-pointer">Tolak Dokumen</button>
                 @endif
               </div>
             </form>
@@ -191,13 +191,24 @@
             @endif
           </div>
         @else
-          <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm flex items-center space-x-4">
-            <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col items-start space-y-4">
+            <div class="flex items-center space-x-4">
+              <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900">Status Pengajuan</h4>
+                <p class="text-sm text-slate-500">Dokumen Anda sedang diproses. Pantau riwayat aktivitas di sebelah kanan untuk pembaruan terkini.</p>
+              </div>
             </div>
-            <div>
-              <h4 class="font-bold text-slate-900">Status Pengajuan</h4>
-              <p class="text-sm text-slate-500">Dokumen Anda sedang diproses. Pantau riwayat aktivitas di sebelah kanan untuk pembaruan terkini.</p>
+            
+            <div class="w-full mt-4 pt-4 border-t border-slate-100 flex items-center space-x-6">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ urlencode(route('track', $document->id)) }}" alt="Tracking QR Code" class="rounded-xl border border-slate-200 p-1">
+              <div>
+                <p class="text-sm font-bold text-slate-900">Resi Pelacakan (Tracking QR)</p>
+                <p class="text-xs text-slate-500">Pindai QR Code ini untuk melihat pembaruan status dokumen secara real-time dari perangkat lain (tanpa perlu login).</p>
+                <a href="{{ route('track', $document->id) }}" target="_blank" class="text-xs font-bold text-indigo-500 hover:text-indigo-600 mt-2 inline-block">Buka Link Pelacakan &rarr;</a>
+              </div>
             </div>
           </div>
         @endif
@@ -247,5 +258,7 @@
 </div>
 
 <script type="module" src="{{ asset('build/assets/show_js.js') }}"></script>
+
+
 
 @endsection

@@ -17,6 +17,7 @@ class Document extends Model
         'signed_file_path',
         'current_step',
         'sla_deadline',
+        'verification_hash',
     ];
 
     public function user()

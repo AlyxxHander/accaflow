@@ -17,8 +17,10 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Public Verification
+// Public Verification & Tracking
 Route::get('/verify/{hash}', [PublicVerificationController::class, 'verify'])->name('verify');
+Route::get('/track/{id}', [PublicVerificationController::class, 'track'])->name('track');
+Route::get('/api/documents/{document}/status', [DocumentController::class, 'getStatus'])->name('documents.status-api');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

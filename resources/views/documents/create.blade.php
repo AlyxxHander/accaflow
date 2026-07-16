@@ -38,7 +38,7 @@
 
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-2"><span class="text-red-500">* </span>File Dokumen</label>
-          <input type="file" name="file" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 hover:file:cursor-pointer transition-all">
+          <input type="file" name="file" accept=".pdf" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 hover:file:cursor-pointer transition-all">
           <p class="text-xs text-slate-400 mt-2"><span class="text-red-500">* </span>Maksimal ukuran file 2MB</p>
         </div>
       </div>

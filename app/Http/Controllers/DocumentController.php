@@ -202,8 +202,8 @@ class DocumentController extends Controller
         $request->validate([
             'status' => 'required|string|in:verified,approved,rejected,signed',
             'comment' => 'nullable|string',
-            'signed_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
-            'stamped_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
+            'signed_file' => 'nullable|file|mimes:pdf|max:4096',
+            'stamped_file' => 'nullable|file|mimes:pdf|max:4096',
         ]);
 
         $user = Auth::user();
@@ -216,23 +216,69 @@ class DocumentController extends Controller
             'rejected' => ['role' => 'any', 'next_step' => $document->current_step],
         ];
 
+        if ($request->status === 'approved' && !in_array($user->role->name, ['kaprodi', 'super_admin'])) {
+            abort(403, 'Hanya Kaprodi atau Super Admin yang dapat memberi stempel prodi.');
+        }
+
         $updateData = [
             'status' => $request->status,
             'current_step' => $request->status === 'rejected' ? $document->current_step : ($statusMap[$request->status]['next_step'] ?? $document->current_step),
         ];
 
-        if ($request->status === 'approved') {
-            if ($request->hasFile('stamped_file')) {
-                $path = $request->file('stamped_file')->store('documents/stamped', 'local');
-                $updateData['stamped_file_path'] = $path;
-            }
-        }
+        if ($request->status === 'approved' || $request->status === 'signed') {
+            $fileKey = $request->status === 'approved' ? 'stamped_file' : 'signed_file';
+            $pathPrefix = $request->status === 'approved' ? 'documents/stamped' : 'documents/signed';
 
-        if ($request->status === 'signed') {
-            $updateData['verification_hash'] = Str::random(32);
-            if ($request->hasFile('signed_file')) {
-                $path = $request->file('signed_file')->store('documents/signed', 'local');
-                $updateData['signed_file_path'] = $path;
+            if ($request->status === 'signed') {
+                $updateData['verification_hash'] = Str::random(32);
+            } else if (!$document->verification_hash) {
+                $updateData['verification_hash'] = Str::random(32);
+            }
+
+            if ($request->hasFile($fileKey)) {
+                $path = $request->file($fileKey)->store($pathPrefix, 'local');
+                
+                $hash = $updateData['verification_hash'] ?? $document->verification_hash;
+                
+                try {
+                    $fullPath = \Illuminate\Support\Facades\Storage::disk('local')->path($path);
+                    
+                    // Fetch QR code PNG from external API
+                    $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode(route('verify', $hash));
+                    $qrTempPath = sys_get_temp_dir() . '/' . uniqid('qr_') . '.png';
+                    file_put_contents($qrTempPath, file_get_contents($qrUrl));
+
+                    // Use FPDI to stamp
+                    $pdf = new \setasign\Fpdi\Fpdi();
+                    $pageCount = $pdf->setSourceFile($fullPath);
+                    
+                    for ($i = 1; $i <= $pageCount; $i++) {
+                        $templateId = $pdf->importPage($i);
+                        $size = $pdf->getTemplateSize($templateId);
+                        $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+                        $pdf->useTemplate($templateId);
+                        
+                        // Stamp on the first page (Top Right corner)
+                        if ($i === 1) {
+                            $pdf->Image($qrTempPath, $size['width'] - 35, 10, 25, 25, 'PNG');
+                            $pdf->SetFont('Arial', 'B', 8);
+                            $pdf->SetTextColor(50, 50, 50);
+                            $pdf->SetXY($size['width'] - 40, 36);
+                            $pdf->Cell(35, 4, 'TERVERIFIKASI', 0, 0, 'C');
+                        }
+                    }
+                    
+                    $pdf->Output('F', $fullPath);
+                    @unlink($qrTempPath);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Failed to stamp QR code: " . $e->getMessage());
+                }
+
+                if ($request->status === 'approved') {
+                    $updateData['stamped_file_path'] = $path;
+                } else {
+                    $updateData['signed_file_path'] = $path;
+                }
             }
         }
 
@@ -245,7 +291,7 @@ class DocumentController extends Controller
             'rejected' => 'ditolak',
         ];
 
-        DocumentLog::create([
+        $log = DocumentLog::create([
             'document_id' => $document->id,
             'user_id' => $user->id,
             'action' => $request->status,
@@ -366,5 +412,15 @@ class DocumentController extends Controller
         }
 
         return redirect()->back()->with('success', "$deletedCount dokumen berhasil dihapus.");
+    }
+
+    public function getStatus(Document $document)
+    {
+        return response()->json([
+            'status' => $document->status,
+            'current_step' => $document->current_step,
+            'updated_at' => $document->updated_at->toISOString(),
+            'logs_count' => $document->logs()->count(),
+        ]);
     }
 }
